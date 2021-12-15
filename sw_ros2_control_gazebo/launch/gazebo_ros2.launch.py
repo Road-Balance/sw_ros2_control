@@ -31,11 +31,7 @@ def generate_launch_description():
 
 
 
-    # node_joint_state_publisher = Node(
-    #     package='joint_state_publisher',
-    #     executable='joint_state_publisher',
-    #     name='joint_state_publisher'
-    # )
+
 
     # gazebo
     pkg_gazebo_ros = FindPackageShare(package='gazebo_ros').find('gazebo_ros')   
@@ -59,15 +55,22 @@ def generate_launch_description():
         parameters=[robot_description]
     )
 
-    # spawn robot
-    # spawn_entity = Node(package='gazebo_ros', executable='spawn_entity.py',
-    #                     arguments=['-topic', 'robot_description',
-    #                                '-entity', 'rotate_box_bot'],
-    #                     output='screen')
+    # Joint State Publisher
+    joint_state_publisher = Node(
+        package='joint_state_publisher',
+        executable='joint_state_publisher',
+        name='joint_state_publisher'
+    )
+
+    # Spawn Robot
+    spawn_entity = Node(package='gazebo_ros', executable='spawn_entity.py',
+                        arguments=['-topic', 'robot_description',
+                                   '-entity', 'rotate_box_bot'],
+                        output='screen')
 
     return LaunchDescription([
         gazebo,
         robot_state_publisher,
-        # spawn_entity,
-        # node_joint_state_publisher,
+        joint_state_publisher,
+        spawn_entity,
     ])
