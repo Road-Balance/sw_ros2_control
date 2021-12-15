@@ -1,37 +1,19 @@
-# Only Gazebo & Spawn
-
 import os
 
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument, ExecuteProcess
+from launch.event_handlers import OnProcessExit
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.actions import IncludeLaunchDescription, ExecuteProcess, RegisterEventHandler
 
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
-from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
+# from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
 
 import xacro
 
 def generate_launch_description():
-    # robot state publisher
-
-
-    # # To check
-    # # robot_description = {"robot_description": robot_description_content}
-
-    # robot_controllers = PathJoinSubstitution(
-    #     [
-    #         FindPackageShare("my_rotate_bot"),
-    #         "controllers",
-    #         "testbot_controller.yaml",
-    #     ]
-    # )
-
-
-
-
 
     # gazebo
     pkg_gazebo_ros = FindPackageShare(package='gazebo_ros').find('gazebo_ros')   
@@ -68,7 +50,31 @@ def generate_launch_description():
                                    '-entity', 'rotate_box_bot'],
                         output='screen')
 
+    load_joint_state_controller = ExecuteProcess(
+        cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
+             'joint_state_broadcaster'],
+        output='screen'
+    )
+
+    load_joint_trajectory_controller = ExecuteProcess(
+        cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
+             'joint_trajectory_controller'],
+        output='screen'
+    )
+
     return LaunchDescription([
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=spawn_entity,
+                on_exit=[load_joint_state_controller],
+            )
+        ),
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=load_joint_state_controller,
+                on_exit=[load_joint_trajectory_controller],
+            )
+        ),
         gazebo,
         robot_state_publisher,
         joint_state_publisher,
