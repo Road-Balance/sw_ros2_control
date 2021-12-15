@@ -21,6 +21,25 @@ find_package(gazebo_ros_pkgs REQUIRED)
 find_package(urdf REQUIRED)
 find_package(xacro REQUIRED)
 
+# Generate .urdf files from .urdf.xacro files
+file(GLOB xacro_files urdf/racecar/*.urdf.xacro)
+
+# if error occurs, comment below lines and try colcon build first
+# then, build with uncomment again
+foreach(it ${xacro_files})
+  # remove .xacro extension
+  string(REGEX MATCH "(.*)[.]xacro$" unused ${it})
+  set(output_filename ${CMAKE_MATCH_1})
+
+  # create a rule to generate ${output_filename} from {it}
+  xacro_add_xacro_file(${it} ${output_filename})
+
+  list(APPEND urdf_files ${output_filename})
+endforeach(it)
+
+# add an abstract target to actually trigger the builds
+add_custom_target(media_files ALL DEPENDS ${urdf_files})
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   # the following line skips the linter which checks for copyrights
@@ -36,6 +55,7 @@ install(
   DIRECTORY
     launch
     config
+    meshes
     urdf
   DESTINATION
     share/${PROJECT_NAME}/
