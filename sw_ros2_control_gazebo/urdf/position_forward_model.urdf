@@ -1,0 +1,81 @@
+<?xml version="1.0" ?>
+<robot name="rotate_box_bot">
+  <link name="world"/>
+  <link name="link_0">
+    <visual>
+      <geometry>
+        <box size="1 1 0.628546"/>
+      </geometry>
+      <origin xyz="-0.142107 0.058655 -0.552528"/>
+    </visual>
+    <inertial>
+      <mass value="100"/>
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+    </inertial>
+  </link>
+  <link name="link_1">
+    <visual>
+      <geometry>
+        <cylinder radius="0.223996" length="0.57529"/>
+      </geometry>
+      <origin xyz="-0.069719 0.006867 0.049391"/>
+    </visual>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+    </inertial>
+  </link>
+  <link name="link_2">
+    <visual>
+      <geometry>
+        <box size="1 1 0.33221"/>
+      </geometry>
+      <origin xyz="0.211826 -0.065522 0.503141"/>
+    </visual>
+    <inertial>
+      <mass value="100"/>
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+    </inertial>
+  </link>
+  <joint name="world_JOINT_0" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 1"/>
+    <parent link="world"/>
+    <child link="link_0"/>
+  </joint>
+  <joint name="link_0_JOINT_0" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 1"/>
+    <parent link="link_0"/>
+    <child link="link_1"/>
+  </joint>
+  <joint name="link_1_JOINT_0" type="revolute">
+    <axis xyz="0 0 1"/>
+    <origin xyz="0.0 0.0 0.0"/>
+    <parent link="link_1"/>
+    <child link="link_2"/>
+    <!-- 70 degrees to radians for limit -->
+    <limit effort="1000.0" lower="-1.22173" upper="1.22173" velocity="0.1"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <ros2_control name="GazeboSystem" type="system">
+    <hardware>
+      <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+    </hardware>
+    <joint name="link_1_JOINT_0">
+      <command_interface name="position">
+        <param name="min">-15</param>
+        <param name="max">15</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+      <state_interface name="effort"/>
+    </joint>
+  </ros2_control>
+
+  <gazebo>
+    <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+      <parameters>$(find sw_ros2_control_gazebo)/config/boxbot_fc_controller.yaml</parameters>
+    </plugin>
+  </gazebo>
+
+</robot>

@@ -24,7 +24,7 @@ def generate_launch_description():
 
     # Robot State Publisher
     pkg_path = os.path.join(get_package_share_directory('sw_ros2_control_gazebo'))
-    urdf_file = os.path.join(pkg_path, 'urdf', 'model.urdf')
+    urdf_file = os.path.join(pkg_path, 'urdf', 'position_forward_model.urdf')
 
     doc = xacro.parse(open(urdf_file))
     xacro.process_doc(doc)
@@ -50,31 +50,31 @@ def generate_launch_description():
                                    '-entity', 'rotate_box_bot'],
                         output='screen')
 
-    load_joint_state_controller = ExecuteProcess(
+    load_joint_state_broadcaster = ExecuteProcess(
         cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
              'joint_state_broadcaster'],
         output='screen'
     )
 
-    load_joint_trajectory_controller = ExecuteProcess(
+    load_forward_position_controller = ExecuteProcess(
         cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
-             'joint_trajectory_controller'],
+             'forward_position_controller'],
         output='screen'
     )
 
     return LaunchDescription([
-        # RegisterEventHandler(
-        #     event_handler=OnProcessExit(
-        #         target_action=spawn_entity,
-        #         on_exit=[load_joint_state_controller],
-        #     )
-        # ),
-        # RegisterEventHandler(
-        #     event_handler=OnProcessExit(
-        #         target_action=load_joint_state_controller,
-        #         on_exit=[load_joint_trajectory_controller],
-        #     )
-        # ),
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=spawn_entity,
+                on_exit=[load_joint_state_broadcaster],
+            )
+        ),
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=load_joint_state_broadcaster,
+                on_exit=[load_forward_position_controller],
+            )
+        ),
         gazebo,
         robot_state_publisher,
         joint_state_publisher,
