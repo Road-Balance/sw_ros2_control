@@ -88,7 +88,7 @@
 
   <gazebo>
     <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
-      <parameters>$(find sw_ros2_control_gazebo)/config/boxbot_controller.yaml</parameters>
+      <parameters>$(find sw_ros2_control_gazebo)/config/boxbot_state_controller.yaml</parameters>
     </plugin>
   </gazebo>
 
