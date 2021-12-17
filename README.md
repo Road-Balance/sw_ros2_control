@@ -171,3 +171,10 @@ ros2 topic pub /velocity_controller/commands std_msgs/msg/Float64MultiArray "dat
 
 ros2 run sw_ros2_control racecar_controller
 ros2 run sw_ros2_control ackermann_converter
+
+ros2 launch sw_ros2_control_gazebo racecar_with_world.launch.py
+
+# Walker World Spawn
+
+export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/home/kimsooyoung/ros2_ws/install/sw_ros2_control_gazebo/share/sw_ros2_control_gazebo
+

@@ -57,6 +57,9 @@ install(
     config
     meshes
     urdf
+    worlds
+    models
+    models/walker_racecourse
   DESTINATION
     share/${PROJECT_NAME}/
 )
