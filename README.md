@@ -171,6 +171,7 @@ ros2 topic pub /velocity_controller/commands std_msgs/msg/Float64MultiArray "dat
 
 ros2 run sw_ros2_control racecar_controller
 ros2 run sw_ros2_control ackermann_converter
+=> add two rorun into launch file
 
 ros2 launch sw_ros2_control_gazebo racecar_with_world.launch.py
 
