@@ -47,8 +47,14 @@ def generate_launch_description():
     # Spawn Robot
     spawn_entity = Node(package='gazebo_ros', executable='spawn_entity.py',
                         arguments=['-topic', 'robot_description',
-                                   '-entity', 'rotate_box_bot'],
+                                   '-entity', 'racecar'],
                         output='screen')
+
+    load_forward_position_controller = ExecuteProcess(
+        cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
+             'forward_position_controller'],
+        output='screen'
+    )
 
     load_velocity_controller = ExecuteProcess(
         cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
@@ -63,18 +69,24 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        # RegisterEventHandler(
-        #     event_handler=OnProcessExit(
-        #         target_action=spawn_entity,
-        #         on_exit=[load_joint_state_controller],
-        #     )
-        # ),
-        # RegisterEventHandler(
-        #     event_handler=OnProcessExit(
-        #         target_action=load_joint_state_controller,
-        #         on_exit=[load_velocity_controller],
-        #     )
-        # ),
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=spawn_entity,
+                on_exit=[load_joint_state_controller],
+            )
+        ),
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=load_joint_state_controller,
+                on_exit=[load_forward_position_controller],
+            )
+        ),
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=load_forward_position_controller,
+                on_exit=[load_velocity_controller],
+            )
+        ),
         gazebo,
         robot_state_publisher,
         joint_state_publisher,

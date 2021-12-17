@@ -1,10 +1,16 @@
 # sw_ros2_control
 
+```
+sudo apt install ros-foxy-ackermann-msgs
+sudo apt install ros-foxy-tf2-tools -y
+sudo apt install ros-foxy-ros2-control
+sudo apt install ros-foxy-ros2-controllers
+sudo apt install ros-foxy-gazebo-ros2-control
+```
 
 ## View the Coordinate Frames
 
 ```
-sudo apt install ros-foxy-tf2-tools -y
 ros2 run tf2_tools view_frames.py
 evince frames.pdf
 ``` 
@@ -138,3 +144,30 @@ ros2 topic pub /velocity_controller/commands std_msgs/msg/Float64MultiArray "dat
 ```
 ros2 run sw_ros2_control boxbot_controller
 ```
+
+# Racecar Gazebo
+
+```
+ros2 launch sw_ros2_control_gazebo racecar.launch.py 
+ros2 run sw_ros2_control racecar_controller
+ros2 run rqt_robot_steering rqt_robot_steering
+=> /forward_position_controller/commands
+```
+
+ros2 topic pub /forward_position_controller/commands std_msgs/msg/Float64MultiArray "data:
+- 0.5
+- 0.5"
+
+ros2 topic pub /forward_position_controller/commands std_msgs/msg/Float64MultiArray "data:
+- -0.5
+- -0.5"
+
+
+ros2 topic pub /velocity_controller/commands std_msgs/msg/Float64MultiArray "data:
+- 0.5
+- 0.5
+- 0.5
+- 0.5"
+
+ros2 run sw_ros2_control racecar_controller
+ros2 run sw_ros2_control ackermann_converter

@@ -1,3 +1,7 @@
+from glob import glob
+
+import os
+
 from setuptools import setup
 
 package_name = 'sw_ros2_control'
@@ -10,6 +14,7 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -21,6 +26,8 @@ setup(
     entry_points={
         'console_scripts': [
             'boxbot_controller = sw_ros2_control.boxbot_controller:main',
+            'racecar_controller = sw_ros2_control.racecar_controller:main',
+            'ackermann_converter = sw_ros2_control.cmd_vel_to_ackermann_drive:main',
         ],
     },
 )

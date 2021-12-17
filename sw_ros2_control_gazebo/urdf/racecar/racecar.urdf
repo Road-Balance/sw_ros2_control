@@ -7,13 +7,201 @@
   <!-- inertial parameter macros -->
   <!-- geometry macros -->
   <!-- transmission macros -->
+  <!-- Gazebo references -->
+  <gazebo reference="chassis">
+    <mu1 value="0.0"/>
+    <mu2 value="0.0"/>
+    <kp value="10000000.0"/>
+    <kd value="1.0"/>
+    <material>Gazebo/Blue</material>
+  </gazebo>
+  <gazebo reference="left_rear_wheel">
+    <mu1 value="1.0"/>
+    <mu2 value="1.0"/>
+    <kp value="10000000.0"/>
+    <kd value="1.0"/>
+    <fdir1 value="1 0 0"/>
+    <material>Gazebo/Black</material>
+  </gazebo>
+  <gazebo reference="right_rear_wheel">
+    <mu1 value="1.0"/>
+    <mu2 value="1.0"/>
+    <kp value="10000000.0"/>
+    <kd value="1.0"/>
+    <fdir1 value="1 0 0"/>
+    <material>Gazebo/Black</material>
+  </gazebo>
+  <gazebo reference="left_front_wheel">
+    <mu1 value="1.0"/>
+    <mu2 value="1.0"/>
+    <kp value="10000000.0"/>
+    <kd value="1.0"/>
+    <fdir1 value="0 0 1"/>
+    <material>Gazebo/Black</material>
+  </gazebo>
+  <gazebo reference="right_front_wheel">
+    <mu1 value="1.0"/>
+    <mu2 value="1.0"/>
+    <kp value="10000000.0"/>
+    <kd value="1.0"/>
+    <fdir1 value="0 0 1"/>
+    <material>Gazebo/Black</material>
+  </gazebo>
+  <!-- Gazebo plugins -->
+  <gazebo reference="laser">
+    <material>Gazebo/Grey</material>
+    <sensor name="hokuyo_sensor" type="ray">
+      <pose>0 0 0.0124 0 0 0</pose>
+      <visualize>false</visualize>
+      <update_rate>40</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>1081</samples>
+            <resolution>1</resolution>
+            <min_angle>-2.3561944902</min_angle>
+            <max_angle>2.3561944902</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.1</min>
+          <max>10.0</max>
+          <resolution>0.01</resolution>
+        </range>
+        <noise>
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+      <plugin filename="libgazebo_ros_laser.so" name="gazebo_ros_hokuyo_controller">
+        <topicName>/scan</topicName>
+        <frameName>laser</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+  <gazebo reference="camera_link">
+    <sensor name="zed_camera_left_sensor" type="camera">
+      <update_rate>30.0</update_rate>
+      <!-- math.atan(320 / 687.8065795898438) * 2 -->
+      <camera name="zed_camera_left_camera">
+        <horizontal_fov>0.8709216071359963</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+          <format>B8G8R8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <plugin filename="libgazebo_ros_camera.so" name="camera_controller">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>30.0</updateRate>
+        <cameraName>/camera/zed</cameraName>
+        <imageTopicName>rgb/image_rect_color</imageTopicName>
+        <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>
+        <frameName>camera_link</frameName>
+        <hackBaseline>0</hackBaseline>
+        <!-- set this to 0.12 for the second camera -->
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+      </plugin>
+    </sensor>
+  </gazebo>
+  <ros2_control name="GazeboSystem" type="system">
+    <hardware>
+      <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+    </hardware>
+    <!-- velocity controller -->
+    <joint name="left_rear_wheel_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+      <state_interface name="effort"/>
+    </joint>
+    <joint name="right_rear_wheel_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+      <state_interface name="effort"/>
+    </joint>
+    <joint name="left_front_wheel_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+      <state_interface name="effort"/>
+    </joint>
+    <joint name="right_front_wheel_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+      <state_interface name="effort"/>
+    </joint>
+    <!-- position controller for steering -->
+    <joint name="left_steering_hinge_joint">
+      <command_interface name="position">
+        <param name="min">-15</param>
+        <param name="max">15</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+      <state_interface name="effort"/>
+    </joint>
+    <joint name="right_steering_hinge_joint">
+      <command_interface name="position">
+        <param name="min">-15</param>
+        <param name="max">15</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+      <state_interface name="effort"/>
+    </joint>
+  </ros2_control>
+  <gazebo>
+    <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+      <parameters>/home/kimsooyoung/ros2_ws/install/sw_ros2_control_gazebo/share/sw_ros2_control_gazebo/config/racecar_controller.yaml</parameters>
+    </plugin>
+  </gazebo>
+  <material name="black">
+    <color rgba="0.0 0.0 0.0 1.0"/>
+  </material>
+  <material name="blue">
+    <color rgba="0.0 0.0 0.8 1.0"/>
+  </material>
+  <material name="green">
+    <color rgba="0.0 0.8 0.0 1.0"/>
+  </material>
+  <material name="grey">
+    <color rgba="0.2 0.2 0.2 1.0"/>
+  </material>
+  <material name="orange">
+    <color rgba="1.0 0.4235294117647059 0.0392156862745098 1.0"/>
+  </material>
+  <material name="brown">
+    <color rgba="0.8705882352941177 0.8117647058823529 0.7647058823529411 1.0"/>
+  </material>
+  <material name="red">
+    <color rgba="0.8 0.0 0.0 1.0"/>
+  </material>
+  <material name="white">
+    <color rgba="1.0 1.0 1.0 1.0"/>
+  </material>
   <!-- Add chassis and it's inertia link -->
   <link name="base_link"/>
   <link name="chassis">
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="/home/kimsooyoung/ros2_ws/install/diffbot_description/share/diffbot_description/meshes/chassis.STL"/>
+        <mesh filename="/home/kimsooyoung/ros2_ws/install/sw_ros2_control_gazebo/share/sw_ros2_control_gazebo/meshes/chassis.STL"/>
       </geometry>
       <material name="blue"/>
     </visual>
@@ -45,7 +233,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="/home/kimsooyoung/ros2_ws/install/diffbot_description/share/diffbot_description/meshes/left_rear_wheel.STL"/>
+        <mesh filename="/home/kimsooyoung/ros2_ws/install/sw_ros2_control_gazebo/share/sw_ros2_control_gazebo/meshes/left_rear_wheel.STL"/>
       </geometry>
       <material name="black"/>
     </visual>
@@ -83,7 +271,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="/home/kimsooyoung/ros2_ws/install/diffbot_description/share/diffbot_description/meshes/right_rear_wheel.STL"/>
+        <mesh filename="/home/kimsooyoung/ros2_ws/install/sw_ros2_control_gazebo/share/sw_ros2_control_gazebo/meshes/right_rear_wheel.STL"/>
       </geometry>
       <material name="black"/>
     </visual>
@@ -121,7 +309,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="/home/kimsooyoung/ros2_ws/install/diffbot_description/share/diffbot_description/meshes/left_steering_hinge.STL"/>
+        <mesh filename="/home/kimsooyoung/ros2_ws/install/sw_ros2_control_gazebo/share/sw_ros2_control_gazebo/meshes/left_steering_hinge.STL"/>
       </geometry>
       <material name="grey"/>
     </visual>
@@ -153,7 +341,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="/home/kimsooyoung/ros2_ws/install/diffbot_description/share/diffbot_description/meshes/right_steering_hinge.STL"/>
+        <mesh filename="/home/kimsooyoung/ros2_ws/install/sw_ros2_control_gazebo/share/sw_ros2_control_gazebo/meshes/right_steering_hinge.STL"/>
       </geometry>
       <material name="grey"/>
     </visual>
@@ -185,7 +373,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="/home/kimsooyoung/ros2_ws/install/diffbot_description/share/diffbot_description/meshes/left_front_wheel.STL"/>
+        <mesh filename="/home/kimsooyoung/ros2_ws/install/sw_ros2_control_gazebo/share/sw_ros2_control_gazebo/meshes/left_front_wheel.STL"/>
       </geometry>
       <material name="black"/>
     </visual>
@@ -223,7 +411,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="/home/kimsooyoung/ros2_ws/install/diffbot_description/share/diffbot_description/meshes/right_front_wheel.STL"/>
+        <mesh filename="/home/kimsooyoung/ros2_ws/install/sw_ros2_control_gazebo/share/sw_ros2_control_gazebo/meshes/right_front_wheel.STL"/>
       </geometry>
       <material name="black"/>
     </visual>
@@ -335,145 +523,4 @@
     <child link="zed_camera_right_link"/>
     <axis xyz="0 0 1"/>
   </joint>
-  <!-- Add the remaining xacros -->
-  <!-- Gazebo references -->
-  <gazebo reference="chassis">
-    <mu1 value="0.0"/>
-    <mu2 value="0.0"/>
-    <kp value="10000000.0"/>
-    <kd value="1.0"/>
-    <material>Gazebo/Blue</material>
-  </gazebo>
-  <gazebo reference="left_rear_wheel">
-    <mu1 value="1.0"/>
-    <mu2 value="1.0"/>
-    <kp value="10000000.0"/>
-    <kd value="1.0"/>
-    <fdir1 value="1 0 0"/>
-    <material>Gazebo/Black</material>
-  </gazebo>
-  <gazebo reference="right_rear_wheel">
-    <mu1 value="1.0"/>
-    <mu2 value="1.0"/>
-    <kp value="10000000.0"/>
-    <kd value="1.0"/>
-    <fdir1 value="1 0 0"/>
-    <material>Gazebo/Black</material>
-  </gazebo>
-  <gazebo reference="left_front_wheel">
-    <mu1 value="1.0"/>
-    <mu2 value="1.0"/>
-    <kp value="10000000.0"/>
-    <kd value="1.0"/>
-    <fdir1 value="0 0 1"/>
-    <material>Gazebo/Black</material>
-  </gazebo>
-  <gazebo reference="right_front_wheel">
-    <mu1 value="1.0"/>
-    <mu2 value="1.0"/>
-    <kp value="10000000.0"/>
-    <kd value="1.0"/>
-    <fdir1 value="0 0 1"/>
-    <material>Gazebo/Black</material>
-  </gazebo>
-  <!-- Gazebo plugins -->
-  <gazebo>
-    <plugin filename="libgazebo_ros_control.so" name="gazebo_ros_control">
-      <robotNamespace>/racecar</robotNamespace>
-      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
-    </plugin>
-  </gazebo>
-  <gazebo reference="laser">
-    <material>Gazebo/Grey</material>
-    <sensor name="hokuyo_sensor" type="ray">
-      <pose>0 0 0.0124 0 0 0</pose>
-      <visualize>false</visualize>
-      <update_rate>40</update_rate>
-      <ray>
-        <scan>
-          <horizontal>
-            <samples>1081</samples>
-            <resolution>1</resolution>
-            <min_angle>-2.3561944902</min_angle>
-            <max_angle>2.3561944902</max_angle>
-          </horizontal>
-        </scan>
-        <range>
-          <min>0.1</min>
-          <max>10.0</max>
-          <resolution>0.01</resolution>
-        </range>
-        <noise>
-          <mean>0.0</mean>
-          <stddev>0.01</stddev>
-        </noise>
-      </ray>
-      <plugin filename="libgazebo_ros_laser.so" name="gazebo_ros_hokuyo_controller">
-        <topicName>/scan</topicName>
-        <frameName>laser</frameName>
-      </plugin>
-    </sensor>
-  </gazebo>
-  <gazebo reference="camera_link">
-    <sensor name="zed_camera_left_sensor" type="camera">
-      <update_rate>30.0</update_rate>
-      <!-- math.atan(320 / 687.8065795898438) * 2 -->
-      <camera name="zed_camera_left_camera">
-        <horizontal_fov>0.8709216071359963</horizontal_fov>
-        <image>
-          <width>640</width>
-          <height>480</height>
-          <format>B8G8R8</format>
-        </image>
-        <clip>
-          <near>0.02</near>
-          <far>300</far>
-        </clip>
-        <noise>
-          <type>gaussian</type>
-          <mean>0.0</mean>
-          <stddev>0.007</stddev>
-        </noise>
-      </camera>
-      <plugin filename="libgazebo_ros_camera.so" name="camera_controller">
-        <alwaysOn>true</alwaysOn>
-        <updateRate>30.0</updateRate>
-        <cameraName>/camera/zed</cameraName>
-        <imageTopicName>rgb/image_rect_color</imageTopicName>
-        <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>
-        <frameName>camera_link</frameName>
-        <hackBaseline>0</hackBaseline>
-        <!-- set this to 0.12 for the second camera -->
-        <distortionK1>0.0</distortionK1>
-        <distortionK2>0.0</distortionK2>
-        <distortionK3>0.0</distortionK3>
-        <distortionT1>0.0</distortionT1>
-        <distortionT2>0.0</distortionT2>
-      </plugin>
-    </sensor>
-  </gazebo>
-  <material name="black">
-    <color rgba="0.0 0.0 0.0 1.0"/>
-  </material>
-  <material name="blue">
-    <color rgba="0.0 0.0 0.8 1.0"/>
-  </material>
-  <material name="green">
-    <color rgba="0.0 0.8 0.0 1.0"/>
-  </material>
-  <material name="grey">
-    <color rgba="0.2 0.2 0.2 1.0"/>
-  </material>
-  <material name="orange">
-    <color rgba="1.0 0.4235294117647059 0.0392156862745098 1.0"/>
-  </material>
-  <material name="brown">
-    <color rgba="0.8705882352941177 0.8117647058823529 0.7647058823529411 1.0"/>
-  </material>
-  <material name="red">
-    <color rgba="0.8 0.0 0.0 1.0"/>
-  </material>
-  <material name="white">
-    <color rgba="1.0 1.0 1.0 1.0"/>
-  </material>
 </robot>
