@@ -34,7 +34,8 @@
           </light>
 
   <include>
-    <uri>model://sw_ros2_control_gazebo/models/walker_racecourse</uri>
+    <uri>model://walker_racecoursewalker_racecourse.dae</uri>
+    <!-- <uri>model://sw_ros2_control_gazebo/models/walker_racecourse</uri> -->
     <pose>-4 2 -.5 0 0 -1.57</pose>
     <name>walker_racecourse</name>
   </include>

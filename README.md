@@ -1,11 +1,15 @@
 # sw_ros2_control
 
 ```
-sudo apt install ros-foxy-ackermann-msgs
-sudo apt install ros-foxy-tf2-tools -y
-sudo apt install ros-foxy-ros2-control
-sudo apt install ros-foxy-ros2-controllers
-sudo apt install ros-foxy-gazebo-ros2-control
+sudo apt install ros-foxy-ackermann-msgs \
+                 ros-foxy-tf2-tools \
+                 ros-foxy-ros2-control \
+                 ros-foxy-ros2-controllers \
+                 ros-foxy-gazebo-ros \
+                 ros-foxy-gazebo-ros2-control -y
+
+colcon build --symlink-install --packages-select sw_ros2_control
+colcon build --symlink-install --packages-select sw_ros2_control_gazebo
 ```
 
 ## View the Coordinate Frames
@@ -149,9 +153,8 @@ ros2 run sw_ros2_control boxbot_controller
 
 ```
 ros2 launch sw_ros2_control_gazebo racecar.launch.py 
-ros2 run sw_ros2_control racecar_controller
+ros2 launch sw_ros2_control racecar_control.launch.py
 ros2 run rqt_robot_steering rqt_robot_steering
-=> /forward_position_controller/commands
 ```
 
 ros2 topic pub /forward_position_controller/commands std_msgs/msg/Float64MultiArray "data:
@@ -169,15 +172,17 @@ ros2 topic pub /velocity_controller/commands std_msgs/msg/Float64MultiArray "dat
 - 0.5
 - 0.5"
 
-ros2 run sw_ros2_control racecar_controller
-ros2 run sw_ros2_control ackermann_converter
-=> add two rorun into launch file
-
-ros2 launch sw_ros2_control_gazebo racecar_with_world.launch.py
-ros2 launch sw_ros2_control_gazebo racecar.launch.py
-ros2 launch sw_ros2_control racecar_control.launch.py
 
 # Walker World Spawn
 
-export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/home/kimsooyoung/ros2_ws/install/sw_ros2_control_gazebo/share/sw_ros2_control_gazebo
+```
+cd <ros2-ws>/src/sw_ros2_control/sw_ros2_control_gazebo/models
+cp walker_racecourse ~/.gazebo/models
+source ~/.bashrc
+```
 
+```
+ros2 launch sw_ros2_control_gazebo racecar_with_world.launch.py
+ros2 launch sw_ros2_control racecar_control.launch.py
+ros2 run rqt_robot_steering rqt_robot_steering
+```
