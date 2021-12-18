@@ -174,6 +174,8 @@ ros2 run sw_ros2_control ackermann_converter
 => add two rorun into launch file
 
 ros2 launch sw_ros2_control_gazebo racecar_with_world.launch.py
+ros2 launch sw_ros2_control_gazebo racecar.launch.py
+ros2 launch sw_ros2_control racecar_control.launch.py
 
 # Walker World Spawn
 
