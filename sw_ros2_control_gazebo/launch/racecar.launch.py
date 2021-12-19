@@ -24,7 +24,8 @@ def generate_launch_description():
 
     # Robot State Publisher
     pkg_path = os.path.join(get_package_share_directory('sw_ros2_control_gazebo'))
-    urdf_file = os.path.join(pkg_path, 'urdf', 'racecar', 'racecar.urdf')
+    # urdf_file = os.path.join(pkg_path, 'urdf', 'racecar', 'racecar.urdf')
+    urdf_file = os.path.join(pkg_path, 'urdf', 'clean_racecar', 'clean_racecar.urdf')
 
     doc = xacro.parse(open(urdf_file))
     xacro.process_doc(doc)
