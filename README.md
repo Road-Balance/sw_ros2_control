@@ -6,6 +6,7 @@ sudo apt install ros-foxy-ackermann-msgs \
                  ros-foxy-ros2-control \
                  ros-foxy-ros2-controllers \
                  ros-foxy-gazebo-ros \
+                 ros-foxy-joint-state-publisher-gui \
                  ros-foxy-gazebo-ros2-control -y
 
 colcon build --symlink-install --packages-select sw_ros2_control
@@ -150,6 +151,12 @@ ros2 run sw_ros2_control boxbot_controller
 ```
 
 # Racecar Gazebo
+
+* description
+```
+ros2 launch sw_ros2_control_gazebo racecar_description.launch.py
+```
+
 
 ```
 ros2 launch sw_ros2_control_gazebo racecar.launch.py 

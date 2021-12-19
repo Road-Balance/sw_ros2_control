@@ -53,6 +53,7 @@ endif()
 
 install(
   DIRECTORY
+    rviz
     launch
     config
     meshes

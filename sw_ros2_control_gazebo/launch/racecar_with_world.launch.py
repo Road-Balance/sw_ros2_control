@@ -32,9 +32,7 @@ def generate_launch_description():
     )
 
     # Robot State Publisher
-    pkg_path = os.path.join(get_package_share_directory('sw_ros2_control_gazebo'))
     urdf_file = os.path.join(pkg_path, 'urdf', 'racecar', 'racecar.urdf')
-
     doc = xacro.parse(open(urdf_file))
     xacro.process_doc(doc)
     robot_description = {'robot_description': doc.toxml()}
@@ -77,6 +75,17 @@ def generate_launch_description():
         output='screen'
     )
 
+    # rviz_config_file = os.path.join(pkg_path, 'rviz', 'test.rviz')
+
+    # # Launch RViz
+    # rviz = Node(
+    #     package='rviz2',
+    #     executable='rviz2',
+    #     name='rviz2',
+    #     output='screen',
+    #     arguments=['-d', rviz_config_file]
+    # )  
+
     return LaunchDescription([
         RegisterEventHandler(
             event_handler=OnProcessExit(
@@ -101,4 +110,5 @@ def generate_launch_description():
         robot_state_publisher,
         joint_state_publisher,
         spawn_entity,
+        # rviz,
     ])
