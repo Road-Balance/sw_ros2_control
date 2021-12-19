@@ -19,6 +19,7 @@ def generate_launch_description():
     world_path = os.path.join(pkg_path, 'worlds', 'racecar_course.world')
 
     pkg_gazebo_ros = FindPackageShare(package='gazebo_ros').find('gazebo_ros')   
+    controller_pkg_path = FindPackageShare(package='sw_ros2_control').find('sw_ros2_control')
 
     # Start Gazebo server
     start_gazebo_server_cmd = IncludeLaunchDescription(
@@ -29,6 +30,11 @@ def generate_launch_description():
     # Start Gazebo client    
     start_gazebo_client_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(pkg_gazebo_ros, 'launch', 'gzclient.launch.py'))
+    )
+
+    # Racecar controller launch 
+    racecar_control_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(os.path.join(controller_pkg_path, 'launch', 'racecar_control.launch.py'))
     )
 
     # Robot State Publisher
@@ -101,7 +107,7 @@ def generate_launch_description():
         name='rviz2',
         output='screen',
         arguments=['-d', rviz_config_file]
-    )  
+    )
 
     return LaunchDescription([
         RegisterEventHandler(
@@ -122,11 +128,17 @@ def generate_launch_description():
                 on_exit=[load_velocity_controller],
             )
         ),
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=load_velocity_controller,
+                on_exit=[rviz],
+            )
+        ),
         start_gazebo_server_cmd,
         start_gazebo_client_cmd,
         robot_state_publisher,
         joint_state_publisher,
         spawn_entity,
         rf2o_laser_odometry,
-        rviz,
+        racecar_control_launch,
     ])

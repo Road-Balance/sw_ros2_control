@@ -6,9 +6,8 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /Grid1
-        - /LaserScan1
-        - /ImuDisplay1
+        - /TF1/Frames1
+        - /Odometry1/Shape1
       Splitter Ratio: 0.5
     Tree Height: 276
   - Class: rviz_common/Selection
@@ -46,19 +45,62 @@ Visualization Manager:
       Reference Frame: <Fixed Frame>
       Value: true
     - Class: rviz_default_plugins/TF
-      Enabled: false
+      Enabled: true
       Frame Timeout: 15
       Frames:
-        All Enabled: true
+        All Enabled: false
+        base_link:
+          Value: true
+        camera_link:
+          Value: false
+        chassis:
+          Value: false
+        chassis_inertia:
+          Value: false
+        imu_link:
+          Value: false
+        laser:
+          Value: false
+        left_front_wheel:
+          Value: false
+        left_rear_wheel:
+          Value: false
+        left_steering_hinge:
+          Value: false
+        odom:
+          Value: false
+        right_front_wheel:
+          Value: false
+        right_rear_wheel:
+          Value: false
+        right_steering_hinge:
+          Value: false
+        zed_camera_link:
+          Value: false
+        zed_camera_right_link:
+          Value: false
       Marker Scale: 1
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: false
       Tree:
-        {}
+        odom:
+          base_link:
+            chassis:
+              chassis_inertia:
+                {}
+              laser:
+                {}
+              zed_camera_link:
+                camera_link:
+                  {}
+                imu_link:
+                  {}
+                zed_camera_right_link:
+                  {}
       Update Interval: 0
-      Value: false
+      Value: true
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -117,10 +159,10 @@ Visualization Manager:
         Alpha: 1
         Axes Length: 1
         Axes Radius: 0.10000000149011612
-        Color: 255; 25; 0
+        Color: 255; 85; 255
         Head Length: 0.30000001192092896
         Head Radius: 0.10000000149011612
-        Shaft Length: 1
+        Shaft Length: 0.5
         Shaft Radius: 0.05000000074505806
         Value: Arrow
       Topic:
@@ -144,25 +186,11 @@ Visualization Manager:
       Value: true
       Visibility:
         Grid: true
-        ImuDisplay: true
         LaserScan: true
         Odometry: true
         TF: true
         Value: true
       Zoom Factor: 1
-    - Alpha: 1
-      Class: rviz_plugin_tutorials/ImuDisplay
-      Color: 204; 51; 204
-      Enabled: true
-      History Length: 1
-      Name: ImuDisplay
-      Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /imu/data
-      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -206,25 +234,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 8.970010757446289
+      Distance: 16.662010192871094
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 1.3823471069335938
-        Y: -0.40963026881217957
-        Z: -0.11610349267721176
+        X: 2.9122073650360107
+        Y: 1.4664868116378784
+        Z: 1.2005935907363892
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.7453975081443787
+      Pitch: 1.2253973484039307
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.823586940765381
+      Yaw: 4.71858549118042
     Saved: ~
 Window Geometry:
   Camera:
@@ -242,5 +270,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1200
-  X: 228
-  Y: 137
+  X: 189
+  Y: 145
