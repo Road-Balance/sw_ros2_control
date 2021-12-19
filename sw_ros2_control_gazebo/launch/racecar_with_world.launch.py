@@ -52,10 +52,12 @@ def generate_launch_description():
     )
 
     # Spawn Robot
-    spawn_entity = Node(package='gazebo_ros', executable='spawn_entity.py',
-                        arguments=['-topic', 'robot_description',
-                                   '-entity', 'racecar'],
-                        output='screen')
+    spawn_entity = Node(
+        package='gazebo_ros', 
+        executable='spawn_entity.py',
+        output='screen',
+        arguments=['-topic', 'robot_description', '-entity', 'racecar'],
+    )
 
     load_forward_position_controller = ExecuteProcess(
         cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
@@ -75,16 +77,31 @@ def generate_launch_description():
         output='screen'
     )
 
-    # rviz_config_file = os.path.join(pkg_path, 'rviz', 'test.rviz')
+    rf2o_laser_odometry = Node(
+        package='rf2o_laser_odometry',
+        executable='rf2o_laser_odometry_node',
+        name='rf2o_laser_odometry',
+        output='log',
+        parameters=[{
+            'laser_scan_topic' : '/scan',
+            'odom_topic' : '/odom_rf2o',
+            'publish_tf' : True,    
+            'base_frame_id' : 'base_link',
+            'odom_frame_id' : 'odom',
+            'init_pose_from_topic' : '',
+            'freq' : 10.0}],
+    )
 
-    # # Launch RViz
-    # rviz = Node(
-    #     package='rviz2',
-    #     executable='rviz2',
-    #     name='rviz2',
-    #     output='screen',
-    #     arguments=['-d', rviz_config_file]
-    # )  
+    rviz_config_file = os.path.join(pkg_path, 'rviz', 'gazebo.rviz')
+
+    # Launch RViz
+    rviz = Node(
+        package='rviz2',
+        executable='rviz2',
+        name='rviz2',
+        output='screen',
+        arguments=['-d', rviz_config_file]
+    )  
 
     return LaunchDescription([
         RegisterEventHandler(
@@ -110,5 +127,6 @@ def generate_launch_description():
         robot_state_publisher,
         joint_state_publisher,
         spawn_entity,
-        # rviz,
+        rf2o_laser_odometry,
+        rviz,
     ])
