@@ -22,6 +22,12 @@ def generate_launch_description():
                     pkg_gazebo_ros, 'launch', 'gazebo.launch.py'))
             )
 
+    # Racecar controller launch 
+    controller_pkg_path = FindPackageShare(package='sw_ros2_control').find('sw_ros2_control')
+    racecar_control_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(os.path.join(controller_pkg_path, 'launch', 'racecar_control.launch.py'))
+    )
+
     # Robot State Publisher
     pkg_path = os.path.join(get_package_share_directory('sw_ros2_control_gazebo'))
     # urdf_file = os.path.join(pkg_path, 'urdf', 'racecar', 'racecar.urdf')
@@ -69,6 +75,14 @@ def generate_launch_description():
         output='screen'
     )
 
+    # rqt robot steering
+    rqt_robot_steering = Node(
+        package='rqt_robot_steering',
+        executable='rqt_robot_steering',
+        name='rqt_robot_steering',
+        output='screen'
+    )
+
     return LaunchDescription([
         RegisterEventHandler(
             event_handler=OnProcessExit(
@@ -88,8 +102,15 @@ def generate_launch_description():
                 on_exit=[load_velocity_controller],
             )
         ),
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=load_velocity_controller,
+                on_exit=[racecar_control_launch],
+            )
+        ),
         gazebo,
         robot_state_publisher,
         joint_state_publisher,
         spawn_entity,
+        rqt_robot_steering,
     ])

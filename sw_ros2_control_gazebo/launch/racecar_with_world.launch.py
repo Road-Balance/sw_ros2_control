@@ -9,7 +9,6 @@ from launch.actions import IncludeLaunchDescription, ExecuteProcess, RegisterEve
 
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
-# from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
 
 import xacro
 
@@ -42,12 +41,13 @@ def generate_launch_description():
     doc = xacro.parse(open(urdf_file))
     xacro.process_doc(doc)
     robot_description = {'robot_description': doc.toxml()}
+    param = {'use_sim_time': True, 'robot_description': doc.toxml()}
 
     robot_state_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
         output='screen',
-        parameters=[robot_description]
+        parameters=[param]
     )
 
     # Joint State Publisher
@@ -109,6 +109,14 @@ def generate_launch_description():
         arguments=['-d', rviz_config_file]
     )
 
+    # rqt robot steering
+    rqt_robot_steering = Node(
+        package='rqt_robot_steering',
+        executable='rqt_robot_steering',
+        name='rqt_robot_steering',
+        output='screen'
+    )
+
     return LaunchDescription([
         RegisterEventHandler(
             event_handler=OnProcessExit(
@@ -134,11 +142,17 @@ def generate_launch_description():
                 on_exit=[rviz],
             )
         ),
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=load_velocity_controller,
+                on_exit=[racecar_control_launch],
+            )
+        ),
         start_gazebo_server_cmd,
         start_gazebo_client_cmd,
         robot_state_publisher,
         joint_state_publisher,
         spawn_entity,
         rf2o_laser_odometry,
-        racecar_control_launch,
+        rqt_robot_steering,
     ])

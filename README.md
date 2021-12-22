@@ -190,6 +190,4 @@ source ~/.bashrc
 
 ```
 ros2 launch sw_ros2_control_gazebo racecar_with_world.launch.py
-ros2 launch sw_ros2_control racecar_control.launch.py
-ros2 run rqt_robot_steering rqt_robot_steering
 ```
