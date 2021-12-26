@@ -9,6 +9,8 @@ sudo apt install ros-foxy-ackermann-msgs \
                  ros-foxy-joint-state-publisher-gui \
                  ros-foxy-gazebo-ros2-control -y
 
+rosdep install -y -r -q --from-paths src --ignore-src --rosdistro foxy
+
 colcon build --symlink-install --packages-select sw_ros2_control
 colcon build --symlink-install --packages-select sw_ros2_control_gazebo
 ```
