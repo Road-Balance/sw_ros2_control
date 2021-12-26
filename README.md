@@ -21,6 +21,23 @@ sudo apt install ros-foxy-rviz-common \
                 ros-foxy-xacro \
                 ros-foxy-slam-toolbox -y
 
+rosdep install -y -r -q --from-paths src --ignore-src --rosdistro foxy
+
+delete racecar.urdf 
+delete clean_racecar.urdf 
+comment 24 - 38 line in CMakeLists.txt in sw_ros2_control_gazebo
+
+
+cbp sw_ros2_control_gazebo
+rosfoxy
+cbp sw_ros2_control 
+rosfoxy
+cbp rviz_plugin_tutorials
+rosfoxy
+cbp rqt_rc_steering
+rosfoxy
+
+
 colcon build --symlink-install --packages-select sw_ros2_control
 colcon build --symlink-install --packages-select sw_ros2_control_gazebo
 ```
@@ -166,6 +183,7 @@ ros2 run sw_ros2_control boxbot_controller
 
 * description
 ```
+
 ros2 launch sw_ros2_control_gazebo racecar_description.launch.py
 ```
 
@@ -196,7 +214,7 @@ ros2 topic pub /velocity_controller/commands std_msgs/msg/Float64MultiArray "dat
 
 ```
 cd <ros2-ws>/src/sw_ros2_control/sw_ros2_control_gazebo/models
-cp walker_racecourse ~/.gazebo/models
+cp -r walker_racecourse ~/.gazebo/models
 source ~/.bashrc
 ```
 

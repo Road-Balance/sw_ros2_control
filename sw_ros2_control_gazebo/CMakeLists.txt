@@ -23,6 +23,7 @@ find_package(xacro REQUIRED)
 
 # Generate .urdf files from .urdf.xacro files
 file(GLOB xacro_files urdf/racecar/*.urdf.xacro)
+# file(GLOB xacro_files urdf/clean_racecar/*.urdf.xacro)
 
 # if error occurs, comment below lines and try colcon build first
 # then, build with uncomment again
