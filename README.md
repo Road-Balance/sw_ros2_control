@@ -1,13 +1,25 @@
 # sw_ros2_control
 
 ```
-sudo apt install ros-foxy-ackermann-msgs \
-                 ros-foxy-tf2-tools \
-                 ros-foxy-ros2-control \
-                 ros-foxy-ros2-controllers \
-                 ros-foxy-gazebo-ros \
-                 ros-foxy-joint-state-publisher-gui \
-                 ros-foxy-gazebo-ros2-control -y
+sudo apt install ros-foxy-navigation2 ros-foxy-nav2-bringup -y
+sudo apt install ros-foxy-turtlebot3* -y
+sudo apt install python3-rosdep2 -y
+rosdep update
+
+sudo apt install ros-foxy-rviz-common \
+                ros-foxy-joint-state-publisher-gui \
+                ros-foxy-gazebo-ros2-control \
+                ros-foxy-rqt-robot-steering \
+                ros-foxy-robot-localization \
+                ros-foxy-cartographer-ros \
+                ros-foxy-ros2-controllers \
+                ros-foxy-gazebo-ros-pkgs \
+                ros-foxy-ackermann-msgs \
+                ros-foxy-ros2-control \
+                ros-foxy-gazebo-ros \
+                ros-foxy-tf2-tools \
+                ros-foxy-xacro \
+                ros-foxy-slam-toolbox -y
 
 colcon build --symlink-install --packages-select sw_ros2_control
 colcon build --symlink-install --packages-select sw_ros2_control_gazebo
