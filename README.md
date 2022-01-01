@@ -237,12 +237,20 @@ ros2 launch sw_sensor_fusion robot_localization.launch.py
 
 ```
 ros2 launch sw_cartographer_slam racecar_with_world.launch.py
-ros2 launch sw_cartographer_slam cartographer.launch.py
+ros2 launch sw_cartographer_slam cartographer.launch.py 
+# only slam + rviz
+
 # move racecar with rqt gui 
 
-# Save Map
-ros2 run nav2_map_server map_saver_cli -f turtlebot3_house
+ros2 launch sw_cartographer_slam racecar_with_world.launch.py
+ros2 bag play racecar_cmd_vel
+ros2 launch sw_cartographer_slam robot_localization.launch.py
+ros2 launch sw_cartographer_slam cartographer.launch.py 
 
+# Save Map
+ros2 service call /map_saver/save_map nav2_msgs/srv/SaveMap "{map_topic: map, map_url: my_map, image_format: pgm, map_mode: trinary, free_thresh: 0.25, occupied_thresh: 0.65}"
+
+# Map lanunch
 ros2 launch cartographer_slam nav2_map_server_launch.py
 
 ```

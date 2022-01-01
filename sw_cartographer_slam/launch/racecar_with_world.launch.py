@@ -154,5 +154,5 @@ def generate_launch_description():
         spawn_entity,
         rf2o_laser_odometry,
         rqt_robot_steering,
-        robot_localization,
+        # robot_localization,
     ])
