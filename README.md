@@ -224,6 +224,27 @@ ros2 launch sw_ros2_control_gazebo racecar_with_world.launch.py
 
 # Sensor Fusion
 
-```
+gazebo + racecar + robot_localization + rviz
 
 ```
+ros2 launch sw_sensor_fusion racecar_with_world.launch.py
+
+# only robot_localization + rviz
+ros2 launch sw_sensor_fusion robot_localization.launch.py
+```
+
+# SLAM - Cartographer 
+
+```
+ros2 launch sw_cartographer_slam racecar_with_world.launch.py
+ros2 launch sw_cartographer_slam cartographer.launch.py
+# move racecar with rqt gui 
+
+# Save Map
+ros2 run nav2_map_server map_saver_cli -f turtlebot3_house
+
+ros2 launch cartographer_slam nav2_map_server_launch.py
+
+```
+
+

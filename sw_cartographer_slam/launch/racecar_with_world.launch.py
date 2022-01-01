@@ -14,8 +14,8 @@ import xacro
 
 def generate_launch_description():
 
-    pkg_path = os.path.join(get_package_share_directory('sw_sensor_fusion'))
-
+    slam_pkg_path = os.path.join(get_package_share_directory('sw_cartographer_slam'))
+    sensor_fusion_pkg_path = os.path.join(get_package_share_directory('sw_sensor_fusion'))
     gazebo_pkg_path = os.path.join(get_package_share_directory('sw_ros2_control_gazebo'))
     world_path = os.path.join(gazebo_pkg_path, 'worlds', 'racecar_course.world')
 
@@ -100,17 +100,6 @@ def generate_launch_description():
             'freq' : 10.0}],
     )
 
-    rviz_config_file = os.path.join(pkg_path, 'rviz', 'robot_localization.rviz')
-
-    # Launch RViz
-    rviz = Node(
-        package='rviz2',
-        executable='rviz2',
-        name='rviz2',
-        output='screen',
-        arguments=['-d', rviz_config_file]
-    )
-
     # rqt robot steering
     rqt_robot_steering = Node(
         package='rqt_robot_steering',
@@ -120,7 +109,7 @@ def generate_launch_description():
     )
 
     # Start robot localization using an Extended Kalman filter
-    robot_localization_file_path = os.path.join(pkg_path, 'config', 'ekf.yaml') 
+    robot_localization_file_path = os.path.join(sensor_fusion_pkg_path, 'config', 'ekf.yaml') 
 
     robot_localization = Node(
         package='robot_localization',
@@ -156,12 +145,6 @@ def generate_launch_description():
             event_handler=OnProcessExit(
                 target_action=load_velocity_controller,
                 on_exit=[racecar_control_launch],
-            )
-        ),
-        RegisterEventHandler(
-            event_handler=OnProcessExit(
-                target_action=load_velocity_controller,
-                on_exit=[rviz],
             )
         ),
         start_gazebo_server_cmd,
