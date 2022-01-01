@@ -23,19 +23,9 @@ def generate_launch_description():
     # Set the path to different files and folders.
     pkg_share = os.path.join(get_package_share_directory('sw_sensor_fusion'))
 
-    # Specify the actions
-
-    # Start Gazebo server
-    start_example_env = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(
-                pkg_share, 'launch', 'racecar_with_world.launch.py'
-                )
-            ),
-    )
-
     # Start robot localization using an Extended Kalman filter
     robot_localization_file_path = os.path.join(pkg_share, 'config', 'ekf.yaml') 
+    
     robot_localization = Node(
         package='robot_localization',
         executable='ekf_node',
@@ -59,7 +49,6 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        start_example_env,
         robot_localization,
         rviz,
     ])

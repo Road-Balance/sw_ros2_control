@@ -14,8 +14,10 @@ import xacro
 
 def generate_launch_description():
 
-    pkg_path = os.path.join(get_package_share_directory('sw_ros2_control_gazebo'))
-    world_path = os.path.join(pkg_path, 'worlds', 'racecar_course.world')
+    pkg_path = os.path.join(get_package_share_directory('sw_sensor_fusion'))
+
+    gazebo_pkg_path = os.path.join(get_package_share_directory('sw_ros2_control_gazebo'))
+    world_path = os.path.join(gazebo_pkg_path, 'worlds', 'racecar_course.world')
 
     pkg_gazebo_ros = FindPackageShare(package='gazebo_ros').find('gazebo_ros')   
     controller_pkg_path = FindPackageShare(package='sw_ros2_control').find('sw_ros2_control')
@@ -37,7 +39,7 @@ def generate_launch_description():
     )
 
     # Robot State Publisher
-    urdf_file = os.path.join(pkg_path, 'urdf', 'racecar', 'racecar.urdf')
+    urdf_file = os.path.join(gazebo_pkg_path, 'urdf', 'racecar', 'racecar.urdf')
     doc = xacro.parse(open(urdf_file))
     xacro.process_doc(doc)
     robot_description = {'robot_description': doc.toxml()}
@@ -98,7 +100,7 @@ def generate_launch_description():
             'freq' : 10.0}],
     )
 
-    rviz_config_file = os.path.join(pkg_path, 'rviz', 'gazebo.rviz')
+    rviz_config_file = os.path.join(pkg_path, 'rviz', 'robot_localization.rviz')
 
     # Launch RViz
     rviz = Node(
@@ -115,6 +117,20 @@ def generate_launch_description():
         executable='rqt_robot_steering',
         name='rqt_robot_steering',
         output='screen'
+    )
+
+    # Start robot localization using an Extended Kalman filter
+    robot_localization_file_path = os.path.join(pkg_path, 'config', 'ekf.yaml') 
+
+    robot_localization = Node(
+        package='robot_localization',
+        executable='ekf_node',
+        name='ekf_filter_node',
+        output='screen',
+        parameters=[
+            robot_localization_file_path, 
+            {'use_sim_time': True}
+        ]
     )
 
     return LaunchDescription([
@@ -142,6 +158,12 @@ def generate_launch_description():
                 on_exit=[racecar_control_launch],
             )
         ),
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=load_velocity_controller,
+                on_exit=[rviz],
+            )
+        ),
         start_gazebo_server_cmd,
         start_gazebo_client_cmd,
         robot_state_publisher,
@@ -149,4 +171,5 @@ def generate_launch_description():
         spawn_entity,
         rf2o_laser_odometry,
         rqt_robot_steering,
+        # robot_localization,
     ])
