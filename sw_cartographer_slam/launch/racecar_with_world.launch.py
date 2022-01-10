@@ -12,7 +12,19 @@ from launch_ros.substitutions import FindPackageShare
 
 import xacro
 
+from osrf_pycommon.terminal_color import ansi
+
+
 def generate_launch_description():
+
+    gazebo_model_path = os.path.join(get_package_share_directory('sw_ros2_control_gazebo'), 'models')
+
+    if 'GAZEBO_MODEL_PATH' in os.environ:
+        os.environ['GAZEBO_MODEL_PATH'] += ":" + gazebo_model_path
+    else :
+        os.environ['GAZEBO_MODEL_PATH'] = gazebo_model_path
+    print(ansi("yellow"), "If it's your 1st time to download Gazebo model on your computer, it may take few minutes to finish.", ansi("reset"))
+
 
     slam_pkg_path = os.path.join(get_package_share_directory('sw_cartographer_slam'))
     sensor_fusion_pkg_path = os.path.join(get_package_share_directory('sw_sensor_fusion'))
@@ -154,5 +166,5 @@ def generate_launch_description():
         spawn_entity,
         rf2o_laser_odometry,
         rqt_robot_steering,
-        # robot_localization,
+        robot_localization,
     ])
