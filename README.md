@@ -1,5 +1,8 @@
 # sw_ros2_control
 
+
+### Install Dependencies
+
 ```
 sudo apt install ros-foxy-navigation2 ros-foxy-nav2-bringup -y
 sudo apt install ros-foxy-turtlebot3* -y
@@ -22,11 +25,15 @@ sudo apt install ros-foxy-rviz-common \
                 ros-foxy-slam-toolbox -y
 
 rosdep install -y -r -q --from-paths src --ignore-src --rosdistro foxy
+```
 
+
+### Build
+
+```
 delete racecar.urdf 
 delete clean_racecar.urdf 
 comment 24 - 38 line in CMakeLists.txt in sw_ros2_control_gazebo
-
 
 cbp sw_ros2_control_gazebo
 rosfoxy
