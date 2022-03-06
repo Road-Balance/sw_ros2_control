@@ -50,16 +50,30 @@ def generate_launch_description():
                                    '-entity', 'rotate_box_bot'],
                         output='screen')
 
-    load_joint_state_broadcaster = ExecuteProcess(
-        cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
-             'joint_state_broadcaster'],
-        output='screen'
-    )
+    # Case 1
+    # load_joint_state_broadcaster = ExecuteProcess(
+    #     cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
+    #          'joint_state_broadcaster'],
+    #     output='screen'
+    # )
+    # load_forward_position_controller = ExecuteProcess(
+    #     cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
+    #          'forward_position_controller'],
+    #     output='screen'
+    # )
 
-    load_forward_position_controller = ExecuteProcess(
-        cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
-             'forward_position_controller'],
-        output='screen'
+    # Case 2
+    load_joint_state_broadcaster = Node(
+        package="controller_manager",
+        executable="spawner.py",
+        arguments=["joint_state_broadcaster"],
+        output="screen",
+    )
+    load_forward_position_controller = Node(
+        package="controller_manager",
+        executable="spawner.py",
+        arguments=["forward_position_controller"],
+        output="screen",
     )
 
     return LaunchDescription([

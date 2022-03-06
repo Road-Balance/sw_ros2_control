@@ -50,28 +50,30 @@ def generate_launch_description():
                                    '-entity', 'rotate_box_bot'],
                         output='screen')
 
-    load_joint_state_controller = ExecuteProcess(
-        cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
-             'joint_state_broadcaster'],
-        output='screen'
+    # Case 2
+    load_joint_state_broadcaster = Node(
+        package="controller_manager",
+        executable="spawner.py",
+        arguments=["joint_state_broadcaster"],
+        output="screen",
     )
-
-    load_joint_trajectory_controller = ExecuteProcess(
-        cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
-             'joint_trajectory_controller'],
-        output='screen'
+    load_joint_trajectory_controller = Node(
+        package="controller_manager",
+        executable="spawner.py",
+        arguments=["joint_trajectory_controller"],
+        output="screen",
     )
 
     return LaunchDescription([
         RegisterEventHandler(
             event_handler=OnProcessExit(
                 target_action=spawn_entity,
-                on_exit=[load_joint_state_controller],
+                on_exit=[load_joint_state_broadcaster],
             )
         ),
         RegisterEventHandler(
             event_handler=OnProcessExit(
-                target_action=load_joint_state_controller,
+                target_action=load_joint_state_broadcaster,
                 on_exit=[load_joint_trajectory_controller],
             )
         ),
