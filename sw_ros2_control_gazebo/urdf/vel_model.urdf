@@ -43,7 +43,7 @@
     <child link="link_0"/>
   </joint>
   <joint name="link_0_JOINT_0" type="fixed">
-    <origin rpy="0 0 0" xyz="0 0 1"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
     <parent link="link_0"/>
     <child link="link_1"/>
   </joint>
