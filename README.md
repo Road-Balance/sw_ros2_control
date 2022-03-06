@@ -1,5 +1,8 @@
 # sw_ros2_control
 
+```
+source /usr/share/gazebo/setup.sh
+```
 
 ### Install Dependencies
 
