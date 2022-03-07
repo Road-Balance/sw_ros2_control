@@ -102,12 +102,12 @@ def generate_launch_description():
                 on_exit=[load_velocity_controller],
             )
         ),
-        RegisterEventHandler(
-            event_handler=OnProcessExit(
-                target_action=load_velocity_controller,
-                on_exit=[racecar_control_launch],
-            )
-        ),
+        # RegisterEventHandler(
+        #     event_handler=OnProcessExit(
+        #         target_action=load_velocity_controller,
+        #         on_exit=[racecar_control_launch],
+        #     )
+        # ),
         gazebo,
         robot_state_publisher,
         joint_state_publisher,

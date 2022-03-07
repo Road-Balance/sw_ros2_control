@@ -27,6 +27,7 @@ setup(
         'console_scripts': [
             'boxbot_controller = sw_ros2_control.boxbot_controller:main',
             'racecar_controller = sw_ros2_control.racecar_controller:main',
+            'racecar_controller_v2 = sw_ros2_control.racecar_controller_v2:main',
             'ackermann_converter = sw_ros2_control.cmd_vel_to_ackermann_drive:main',
         ],
     },
